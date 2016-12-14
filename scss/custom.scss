@@ -1,0 +1,30 @@
+#date-display {
+  position: fixed;
+  right: 0;
+  top: rem-calc(25);
+  padding: 0 rem-calc(35) 0 rem-calc(10);
+  background-color: $black;
+}
+
+#cover {
+  width: 100%;
+}
+
+#description {
+  margin-top: 5rem;
+  margin-bottom: 3rem;
+
+  #desctwo {
+
+    margin-top: rem-calc(50);
+
+    .button.expanded {
+      display: block;
+    }
+  }
+}
+
+#comments {
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+}
