@@ -7,6 +7,7 @@ var gridY = [0, 73.228, 146.457, 219.685, 292.913, 366.142, 366.142, 439.37, 512
 var font = "News Gothic";
 var commentBlockWidth = 4;
 var gridWidth = 49.607;
+var gridHeight = 73.229;
 var gridGap = 14.173;
 var maxYStart = 10;
 
@@ -16,7 +17,7 @@ function draw() {
   b.doc();
 
   // Load external data file in JSON-Format
-  var magazinJson = b.loadString('magazin.json');
+  var magazinJson = b.loadString('magazinMF.json');
   magazinJson = b.JSON.decode(magazinJson)[0];
 
 
@@ -35,15 +36,16 @@ function draw() {
 
   // Content
 
-  // var entries = magazinJson.entries;
-  for (var i = 0; i < 10; i++) {
+  var entries = magazinJson.entries;
+  for (var i = 0; i < entries.length; i++) {
 
   	b.addPage();
 
-  	// placeSongtitle(entries[i].songtitle);
+  	placeComments(entries[i].comments, 0);
+  	placeSongtitle(entries[i].songtitle);
   	// placeBandname(entries[i].bandname);
   	// placeComments(entries[i].comments, false, 0);
-  	placeComments('', 3);
+  	
   	// placeArtwork(entries[i].artworkUrl);
   	// placeCover(entries[i].coverUrl);
   	
@@ -63,17 +65,37 @@ function placeComments(comments, titleYStart) {
 	// Basic Styling
 	b.textFont(font, "Regular");
 	b.textSize(11);
+	b.textAlign(Justification.FULLY_JUSTIFIED);
 
 	// Test Content
-	var totalComments = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ';
+	// var totalComments = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ';
+
+	// var totalComments = comments[0].comment + "n" + comments[1].comment + "n";
+
+	var totalComments = '';
+
+	// for (var key in comments) {
+	// 	totalComments = totalComments.concat(key.comment + "n" + "n");
+	// }
+
+	b.forEach(comments, function(item, i) {
+		totalComments = totalComments + item.name + "//" + "\n" + item.comment + "\n" + "\n";
+	});
+
+	
+
+
+	// b.rotate(b.PI*1.5);
 
 	// Random placement setup
 	var startX = b.round(b.random(0, 5));
 	var currentCommentBlockWidth = commentBlockWidth * gridWidth - gridGap;
-	var currentYStart = b.round(b.random(titleYStart, maxYStart));
+	
 	
 	// Frame 1
-	var myFrame1 = b.text(totalComments, gridX[startX] - b.width, gridY[currentYStart], currentCommentBlockWidth, b.height-gridY[currentYStart]);
+	var randomHeight = b.round(b.random(2,7)) * gridHeight - gridGap;
+	var currentYStart = b.round(b.random(titleYStart, maxYStart));
+	var myFrame1 = b.text(totalComments, gridX[startX] - b.width, gridY[currentYStart], currentCommentBlockWidth, gridY[currentYStart] + randomHeight > b.height ? b.height - gridY[currentYStart] : randomHeight);
 	
 	// Frame 2
 	var multiplier = 1;
@@ -82,8 +104,9 @@ function placeComments(comments, titleYStart) {
 		multiplier++;
 		currentXStart = startX + commentBlockWidth * multiplier;
 	}
+	randomHeight = b.round(b.random(2,7)) * gridHeight - gridGap;
 	currentYStart = b.round(b.random(titleYStart, maxYStart));
-	var myFrame2 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, b.height-gridY[currentYStart]);
+	var myFrame2 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, gridY[currentYStart] + randomHeight > b.height ? b.height - gridY[currentYStart] : randomHeight);
 	b.linkTextFrames(myFrame1, myFrame2);
 	
 	// Frame 3
@@ -93,8 +116,9 @@ function placeComments(comments, titleYStart) {
 		multiplier++;
 		currentXStart = startX + commentBlockWidth * multiplier;
 	}
+	randomHeight = b.round(b.random(2,7)) * gridHeight - gridGap;
 	currentYStart = b.round(b.random(titleYStart, maxYStart));
-	var myFrame3 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, b.height-gridY[currentYStart]);
+	var myFrame3 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, gridY[currentYStart] + randomHeight > b.height ? b.height - gridY[currentYStart] : randomHeight);
 	b.linkTextFrames(myFrame2, myFrame3);
 
 	// Frame 4
@@ -104,9 +128,10 @@ function placeComments(comments, titleYStart) {
 		multiplier++;
 		currentXStart = startX + commentBlockWidth * multiplier;
 	}
-	currentYStart = b.round(b.random(titleYStart, maxYStart));
 	if (currentXStart < 20) {
-		var myFrame4 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, b.height-gridY[currentYStart]);
+		randomHeight = b.round(b.random(2,7)) * gridHeight - gridGap;
+		currentYStart = b.round(b.random(titleYStart, maxYStart));
+		var myFrame4 = b.text('', gridX[currentXStart] - b.width, gridY[currentYStart], currentCommentBlockWidth, gridY[currentYStart] + randomHeight > b.height ? b.height - gridY[currentYStart] : randomHeight);
 		b.linkTextFrames(myFrame3, myFrame4);
 	}
 }
@@ -114,16 +139,29 @@ function placeComments(comments, titleYStart) {
 function placeBandname(bandname) {
 	b.textFont(font, "Bold");
 	b.textSize(100);
+	b.textAlign(Justification.LEFT_ALIGN);
 
 	// Texteingabe
-	var myFrame = b.text(bandname.toUpperCase(), 0, 100, b.width * 2, 200);
+	var randomX = b.round(b.random(0, 7));
+	var randomY = b.round(b.random(0,5));
+	var myFrame = b.text(bandname.toUpperCase(), gridX[randomX] - b.width, gridY[randomY], b.width * 2 - gridX[randomX], b.height);
 
 	// Einzug auf der ersten Linie
-	b.typo(myFrame, 'firstLineIndent', 100);
+	// b.typo(myFrame, 'firstLineIndent', 100);
 }
 
 function placeSongtitle(songtitle) {
+	b.textFont(font, "Bold");
+	b.textSize(100);
+	b.textAlign(Justification.LEFT_ALIGN);
 
+	// Texteingabe
+	var randomX = b.round(b.random(0, 7));
+	var randomY = b.round(b.random(0,5));
+	var myFrame = b.text(songtitle.toUpperCase(), gridX[randomX] - b.width, gridY[randomY], b.width * 2 - gridX[randomX], b.height);
+
+	// Einzug auf der ersten Linie
+	// b.typo(myFrame, 'firstLineIndent', 100);
 }
 
 function placeArtwork(artworkURL) {
