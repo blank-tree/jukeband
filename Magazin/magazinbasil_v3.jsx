@@ -14,7 +14,7 @@ var artworkSize = 7;
 var coverSize = 2;
 
 // Grid placement settings
-var placement = [ [], [], [], [], [], [], [], [], [], [], [], [], [] ];
+var placement = [ [], [], [], [], [], [], [], [], [], [], [], [], [], [] ];
 emptyPlacement();
 
 // Font Settings
@@ -26,6 +26,8 @@ function draw() {
   b.doc();
 
   b.addPage();
+  // b.strokeTint(0);
+  b.noStroke();
 
   // Load external data file in JSON-Format
   var magazinJson = b.loadString('magazinMF.json');
@@ -51,17 +53,24 @@ function placeImage(imageUrl, id, type) {
 	
 	// define imgGridHeight of the image
 	var imgGridHeight = 0;
+	var imgGridXMax = 0;
+	var imgGridYMax = 0;
+	var imgGridXMaxCorrection = 0;
 	switch(type) {
 		case "cover":
 			imgGridHeight = coverSize; // Grid No
+			imgGridXMax = 20;
+			imgGridYMax = 11;
+			imgGridXMaxCorrection = 2.361;
 			break;
 		case "artwork":
 			imgGridHeight = artworkSize; // Grid No
+			imgGridXMax = 12;
+			imgGridYMax = 5;
+			imgGridXMaxCorrection = 33.623;
 			break;
 		default:
-			imgGridHeight = 0;
 			b.println("Invalid type passed to placeImage function");
-			return;
 	}
 
 	// Calculate how many grid blocks the width of the image needs
@@ -69,27 +78,56 @@ function placeImage(imageUrl, id, type) {
 	var imgSize = imgGridHeight * gridHeight; // pt
 
 	// Decide X and Y Starting points in the upper left corner for the image
-	var imgX = 0;
-	var imgY = 0;
+	var imgPos = [0, 0]; // Grid No
 	do {
-		imgX = b.round(b.random(0, 22 - imgGridWidth)); // Grid No
-		imgY = b.round(b.random(0, 12 - imgGridHeight)); // Grid No
-	} while (checkPlacementColission(imgX, imgY, imgGridWidth, imgGridHeight));
+		imgPos = decidePositionAtOneBorder(0, 22 - imgGridWidth, 0, 12 - imgGridHeight, imgGridXMax, imgGridYMax);
+	} while (checkPlacementColission(imgPos[0], imgPos[1], imgGridWidth, imgGridHeight));
 
 	// Build image path
 	// var imgPath = type + "/" + imageUrl + ".jpg";
 	var imgPath = "cover/cover_" + id + ".jpg";
 
 	// Place Image
-	var currentImg = b.image(imgPath, gridX[imgX] - b.width, gridY[imgY], imgSize - gridGap, imgSize - gridGap);
+	var imgPosXPt = imgPos[0] != imgGridXMax ? gridX[imgPos[0]] - b.width : gridX[imgPos[0]] - b.width + imgGridXMaxCorrection;
+	var currentImg = b.image(imgPath, imgPosXPt, gridY[imgPos[1]], imgSize - gridGap, imgSize - gridGap);
 
 
-	for (var imgIteratorY = imgY; imgIteratorY < imgGridHeight + imgY; imgIteratorY++) {
-		for (var imgIteratorX = imgX; imgIteratorX < imgGridWidth + imgX; imgIteratorX++) {
+	for (var imgIteratorY = imgPos[1]; imgIteratorY < imgGridHeight + imgPos[1]; imgIteratorY++) {
+		for (var imgIteratorX = imgPos[0]; imgIteratorX < imgGridWidth + imgPos[0]; imgIteratorX++) {
 			placement[imgIteratorY][imgIteratorX] = true;
 		}
 	}
 
+}
+
+function decidePositionAtOneBorder(minX, maxX, minY, maxY, maxPlacementX, maxPlacementY) {
+	// x 0 -12 plus 33.071pt
+	// y 0 - 5
+	var decided = [0, 0];
+	var decideBorder = b.round(b.random(0, 3));
+
+	switch(decideBorder) {
+		case 0:
+			decided[0] = 0;
+			decided[1] = b.round(b.random(minY, maxY));
+			break;
+		case 1:
+			decided[0] = b.round(b.random(minX, maxX));
+			decided[1] = 0;
+			break;
+		case 2:
+			decided[0] = maxPlacementX;
+			decided[1] = b.round(b.random(minY, maxY));
+			break;
+		case 3:
+			decided[0] = b.round(b.random(minX, maxX));
+			decided[1] = maxPlacementY;
+			break;
+		default:
+			b.println("Invalid use of decidePositionAtOneBorder function");
+	}
+
+	return decided;
 }
 
 function checkPlacementColission(pX, pY, pWidth, pHeight) {
