@@ -4,7 +4,7 @@
 // Grid Settings  X 23 - Y 13
 var gridX = [0, 49.606, 99.213, 148.819, 198.425, 248.031, 297.638, 347.244, 396.85, 446.457, 496.063, 545.669, 630.709, 680.315, 729.921, 779.528, 829.134, 878.74, 928.346, 977.953, 1027.559, 1077.165, 1126.772];
 var gridY = [0, 73.228, 146.457, 219.685, 292.913, 366.142, 366.142, 439.37, 512.598, 585.827, 659.055, 732.283, 805.512];
-var commentBlockWidth = 4; // Grid No
+var commentBlockWidth = 3; // Grid No
 var gridWidth = 49.607; // pt
 var gridHeight = 73.229; // pt
 var gridGap = 14.173; // pt
@@ -20,14 +20,24 @@ emptyPlacement();
 // Font Settings
 var font = "Oswald";
 
+// Engine Settings
+var eolCounterMax = 30;
+
 // Main function
 function draw() {
 
   b.doc();
+  b.noStroke();
+
+
+  // Titelseite
 
   b.addPage();
-  // b.strokeTint(0);
-  b.noStroke();
+  
+  // Kurator
+
+
+  // Music
 
   // Load external data file in JSON-Format
   var magazinJson = b.loadString('magazinMF.json');
@@ -41,12 +51,16 @@ function draw() {
 
   	placeImage(entries[i].coverUrl, i, 'cover');
   	placeImage(entries[i].artworkUrl, i, 'artwork');
+  	placeComments(entries[i].comments);
 
   	emptyPlacement();
 
 
   	b.addPage();
   }
+
+  // Rückseite
+
 }
 
 function placeImage(imageUrl, id, type) {
@@ -130,8 +144,72 @@ function decidePositionAtOneBorder(minX, maxX, minY, maxY, maxPlacementX, maxPla
 	return decided;
 }
 
+function placeComments(comments) {
+
+	// Text Styling
+	b.textFont(font, "Light");
+	b.textSize(10);
+	b.textLeading(13);
+	b.textTracking(10);
+	b.textAlign(Justification.FULLY_JUSTIFIED);
+
+	// Combine all comments
+	var totalComments = '';
+	b.forEach(comments, function(item, i) {
+		totalComments = totalComments + item.name + "//" + "\n" + item.comment + "\n" + "\n";
+	});
+
+
+	var startX = 0;
+	var frames = [];
+	var currentCommentBlockWidth = commentBlockWidth * gridWidth - gridGap;
+	var eolCounter = 0;
+
+	// Place Frame 1
+	var frameHeight = 0;
+	var currentY = 0;
+	do {
+		startX = b.round(b.random(0, 12));
+		frameHeight = b.round(b.random(2, 9));
+		currentY = b.round(b.random(0, 12 - frameHeight));
+	} while (checkPlacementColission(startX, currentY, commentBlockWidth, frameHeight));
+
+	frameHeight = frameHeight * gridHeight - gridGap;
+
+	frames[0] = b.text(totalComments, gridX[startX] - b.width, gridY[currentY], currentCommentBlockWidth, gridY[currentY] + frameHeight > b.height ? b.height - gridY[currentY] : frameHeight);
+
+
+	// Place additional frames, as many as fit on the two pages
+	var currentX = 0;
+	var framesIterator = 1;
+	var currentXMax = 0;
+
+	do {
+		currentXMax = 12 + commentBlockWidth * framesIterator;
+		if (currentXMax >= gridX.length - commentBlockWidth) {
+			break;
+		}
+		do {			
+			currentX = b.round(b.random(commentBlockWidth * framesIterator, currentXMax));
+			frameHeight = b.round(b.random(2, 9));
+			currentY = b.round(b.random(0, 12 - frameHeight));
+			eolCounter++;
+		} while (checkPlacementColission(currentX, currentY, commentBlockWidth, frameHeight) && eolCounter < eolCounterMax);
+
+		if (eolCounter < eolCounterMax) {
+			frameHeight = frameHeight * gridHeight - gridGap;
+			frames[framesIterator] = b.text(totalComments, gridX[currentX] - b.width, gridY[currentY], currentCommentBlockWidth, gridY[currentY] + frameHeight > b.height ? b.height - gridY[currentY] : frameHeight);
+			b.linkTextFrames(frames[framesIterator -1], frames[framesIterator]);
+			startX = currentX;
+			framesIterator++;
+			eolCounter = 0;
+		} else {
+			break;
+		}
+	} while (startX + commentBlockWidth < gridX.length);
+}
+
 function checkPlacementColission(pX, pY, pWidth, pHeight) {
-	pHeight += 1;
 	for (var yIterator = pY; yIterator < pY + pHeight; yIterator++) {
 		for (var xIterator = pX; xIterator < pX + pWidth; xIterator++) {
 			if (placement[yIterator][xIterator]) {
@@ -145,9 +223,6 @@ function checkPlacementColission(pX, pY, pWidth, pHeight) {
 function emptyPlacement() {
 	for (var yIterator = 0; yIterator < gridY.length; yIterator++) {
 		for (var xIterator = 0; xIterator < gridX.length; xIterator++) {
-			// if (!placement[yIterator].isArray()) {
-			// 	placement[yIterator] = [];
-			// }
 			placement[yIterator][xIterator] = false;
 		}
 	}
