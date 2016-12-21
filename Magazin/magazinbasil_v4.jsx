@@ -39,6 +39,9 @@ function draw() {
   var jsonFile = b.loadString('magazin3.json');
   var completeContent = b.JSON.decode(jsonFile);
 
+  // Index
+  placeIndex(completeContent);
+
   // Content
   for (var contentIterator = 0; contentIterator < 4; contentIterator++) {
   	placeContent(completeContent[contentIterator]);
@@ -46,6 +49,45 @@ function draw() {
 
   // Rückseite
 
+}
+
+function placeIndex(completeContent) {
+
+	b.addPage();
+
+	var totalBandnames = "";
+	var totalSongtitles = "";
+	for (var contentIterator = 0; contentIterator < 4; contentIterator++) {
+  		for (var weekIterator = 0; weekIterator < 7; weekIterator++) {
+  			totalBandnames = totalBandnames + completeContent[contentIterator].entries[weekIterator].bandname + "\n";
+  			totalSongtitles = totalSongtitles + completeContent[contentIterator].entries[weekIterator].songtitle + "\n";
+  		}
+  	}
+
+  	// Bandnames
+  	b.textFont(font, "Bold");
+	b.textSize(33.5);
+	b.textLeading(30.915);
+	b.textTracking(0);
+	b.textAlign(Justification.RIGHT_ALIGN);
+
+	var bandnamesFrame = b.text(totalBandnames, gridX[0] - b.width, gridY[0], 11 * gridWidth - gridGap, b.height);
+
+
+	// Songtitles
+	b.textFont(font, "Light");
+	b.textSize(33.5);
+	b.textLeading(30.95);
+	b.textTracking(0);
+	b.textAlign(Justification.LEFT_ALIGN);
+
+	var songtitlesFrame = b.text(totalSongtitles, gridX[12] - b.width, gridY[0], 11 * gridWidth - gridGap, b.height);
+
+
+	placeIndexDesc();
+
+
+	b.addPage();
 }
 
 function placeContent(weekContent) {
@@ -331,7 +373,6 @@ function emptyPlacement() {
 			placement[yIterator][xIterator] = false;
 		};
 	};
-	// b.rotate(b.PI);
 }
 
 function placeDate(dayInt, dayString, dateString, countryString, durationString) {
@@ -371,6 +412,34 @@ function placeDate(dayInt, dayString, dateString, countryString, durationString)
 
 	b.popMatrix();
 
+}
+
+function placeIndexDesc() {
+	b.pushMatrix();
+
+	// Rotation
+	b.rotate(b.PI*1.5);
+
+	// Text Styling
+	b.fill(0,0,0,100);
+	b.textFont(font, "Regular");
+	b.textSize(10);
+	b.textLeading(Leading.AUTO);
+	b.textTracking(20);
+	b.textAlign(Justification.LEFT_ALIGN);
+
+	var descFrames = [];
+	
+	descFrames[0] = b.text("JANUARY", gridX[12] - b.width - gridGap, gridY[12] - gridGap, gridHeight, gridGap);
+	descFrames[1] = b.text("2017", gridX[12] - b.width - gridGap, gridY[11] - gridGap, gridHeight, gridGap);
+	descFrames[2] = b.text("2:31:28", gridX[12] - b.width - gridGap, gridY[8] - gridGap, gridHeight, gridGap);
+
+	descFrames[3] = b.text("JANUARY", gridX[11] - b.width - gridGap, gridY[12] - gridGap, gridHeight, gridGap);
+	descFrames[4] = b.text("2017", gridX[11] - b.width - gridGap, gridY[11] - gridGap, gridHeight, gridGap);
+	descFrames[5] = b.text("WORLDWIDE", gridX[11] - b.width - gridGap, gridY[9] - gridGap, gridHeight, gridGap);
+
+
+	b.popMatrix();
 }
 
 
