@@ -15,6 +15,7 @@ var coverSize = 2;
 
 // Grid placement settings
 var placement = [ [], [], [], [], [], [], [], [], [], [], [], [], [], [] ];
+var titleYPlacement = [];
 emptyPlacement();
 
 // Font Settings
@@ -56,6 +57,17 @@ function draw() {
   	placeImage(entries[i].coverUrl, i, 'cover');
   	placeImage(entries[i].artworkUrl, i, 'artwork');
   	placeComments(entries[i].comments);
+
+
+  	if (entries[i].bandname.length < 12) {
+	  	placeTitle(entries[i].songtitle, 67, "Regular");
+	  	placeTitle(entries[i].bandname, 152,  "Bold");
+	  	placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
+  	} else {
+  		placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
+  		placeTitle(entries[i].songtitle, 30, "Regular");
+	  	placeTitle(entries[i].bandname, 67,  "Bold");
+  	}
 
   	emptyPlacement();
 
@@ -174,6 +186,9 @@ function placeComments(comments) {
 	var currentY = 0;
 	do {
 		startX = b.round(b.random(0, 12));
+		if (startX == 10 || startX == 11) {
+			startX += commentBlockWidth;
+		}
 		frameHeight = b.round(b.random(2, 9));
 		currentY = b.round(b.random(0, 12 - frameHeight));
 	} while (checkPlacementColission(startX, currentY, commentBlockWidth, frameHeight));
@@ -188,6 +203,9 @@ function placeComments(comments) {
 
 	do {
 		startX += commentBlockWidth;
+		if (startX == 10 || startX == 11) {
+			startX += commentBlockWidth;
+		}
 		do {			
 			frameHeight = b.round(b.random(2, 9));
 			currentY = b.round(b.random(0, 12 - frameHeight));
@@ -206,6 +224,37 @@ function placeComments(comments) {
 	} while (startX + commentBlockWidth * 2 < gridX.length);
 }
 
+function placeTitle(text, fontsize, fontstyle) {
+
+	// Text Styling
+	b.textFont(font, fontstyle);
+	b.textSize(fontsize);
+	b.textLeading(Leading.AUTO);
+	b.textTracking(0);
+	b.textAlign(Justification.LEFT_ALIGN);
+
+	var randomX = 0;
+	var randomY = 0;
+	var randomWidth = 0;
+	var randomHeight = 0;
+
+	do {
+		randomWidth = b.round(b.random(5, 8));
+		randomHeight = b.round(b.random(2, 3));
+		randomX = b.round(b.random(0, gridX.length - randomWidth - 1));
+		do {
+			randomY = b.round(b.random(0, gridY.length - randomHeight - 1));
+		} while(checkTitlePlacementColission(randomY));
+
+		
+	} while (checkPlacementColission(randomX, randomY, randomWidth, randomHeight));
+
+	titleYPlacement.push(randomY);
+
+	var titleFrame = b.text(text.toUpperCase(), gridX[randomX] - b.width, gridY[randomY], randomWidth * gridWidth, randomHeight * gridHeight);
+
+}
+
 function checkPlacementColission(pX, pY, pWidth, pHeight) {
 	pHeight += 1;
 	for (var yIterator = pY; yIterator < pY + pHeight; yIterator++) {
@@ -218,12 +267,60 @@ function checkPlacementColission(pX, pY, pWidth, pHeight) {
 	return false;
 }
 
+function checkTitlePlacementColission(pY) {
+	for (var titlePlaceIterator = 0; titlePlaceIterator < titleYPlacement.length; titlePlaceIterator++) {
+		if (pY == titleYPlacement[titlePlaceIterator]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function emptyPlacement() {
 	for (var yIterator = 0; yIterator < gridY.length; yIterator++) {
 		for (var xIterator = 0; xIterator < gridX.length; xIterator++) {
 			placement[yIterator][xIterator] = false;
 		}
 	}
+	titleYPlacement = [];
+	// b.rotate(b.PI);
+}
+
+function placeDate(dayInt, dayString, dateString, countryString, durationString) {
+
+	b.pushMatrix();
+
+	// Rotation
+	b.rotate(b.PI*1.5);
+
+	// white background
+	b.fill(0,0,0,0);
+	b.rect(gridX[12] - b.width - gridGap, gridY[12] + gridHeight + 2, 2 + 5 * gridHeight + 5 * gridGap + 2.36, gridGap);
+
+
+	// Text Styling
+	b.fill(0,0,0,100);
+	b.textFont(font, "Regular");
+	b.textSize(10);
+	b.textLeading(Leading.AUTO);
+	b.textTracking(20);
+	b.textAlign(Justification.LEFT_ALIGN);
+
+	var dateFrames = [];
+
+	
+	dateFrames[0] = b.text(dayString.toUpperCase(), gridX[12] - b.width - gridGap, gridY[12] - gridGap, gridHeight, gridGap);
+	dateFrames[1] = b.text(dateString, gridX[12] - b.width - gridGap, gridY[11] - gridGap, gridHeight, gridGap);
+	dateFrames[2] = b.text(countryString, gridX[12] - b.width - gridGap, gridY[9] - gridGap, gridHeight, gridGap);
+	dateFrames[3] = b.text(durationString, gridX[12] - b.width - gridGap, gridY[8] - gridGap, gridHeight, gridGap);
+
+	for (var rotationIterator = 0; rotationIterator < dateFrames.length; rotationIterator++) {
+		
+		//  dateFrames[rotationIterator]
+	}
+
+	b.popMatrix();
+
 }
 
 
