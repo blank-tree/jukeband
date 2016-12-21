@@ -21,27 +21,31 @@ emptyPlacement();
 var font = "Oswald";
 
 // Engine Settings
-var eolCounterMax = 30;
+var eolCounterMax = 50;
 
 // Main function
 function draw() {
 
+  // General document setup
   b.doc();
   b.noStroke();
 
+  // Load external data file in JSON-Format
+  var magazinJson = b.loadString('magazinMF.json');
+  magazinJson = b.JSON.decode(magazinJson)[0];
+
 
   // Titelseite
+
+  // TODO: Titelpage here!
 
   b.addPage();
   
   // Kurator
 
+  // TODO: Kurator here!
 
   // Music
-
-  // Load external data file in JSON-Format
-  var magazinJson = b.loadString('magazinMF.json');
-  magazinJson = b.JSON.decode(magazinJson)[0];
 
   var entries = magazinJson.entries;
 
@@ -106,7 +110,7 @@ function placeImage(imageUrl, id, type) {
 	var currentImg = b.image(imgPath, imgPosXPt, gridY[imgPos[1]], imgSize - gridGap, imgSize - gridGap);
 
 
-	for (var imgIteratorY = imgPos[1]; imgIteratorY < imgGridHeight + imgPos[1]; imgIteratorY++) {
+	for (var imgIteratorY = imgPos[1]; imgIteratorY < imgGridHeight + imgPos[1] + 1; imgIteratorY++) {
 		for (var imgIteratorX = imgPos[0]; imgIteratorX < imgGridWidth + imgPos[0]; imgIteratorX++) {
 			placement[imgIteratorY][imgIteratorX] = true;
 		}
@@ -159,7 +163,7 @@ function placeComments(comments) {
 		totalComments = totalComments + item.name + "//" + "\n" + item.comment + "\n" + "\n";
 	});
 
-
+	// Frames Setup
 	var startX = 0;
 	var frames = [];
 	var currentCommentBlockWidth = commentBlockWidth * gridWidth - gridGap;
@@ -180,36 +184,30 @@ function placeComments(comments) {
 
 
 	// Place additional frames, as many as fit on the two pages
-	var currentX = 0;
 	var framesIterator = 1;
-	var currentXMax = 0;
 
 	do {
-		currentXMax = 12 + commentBlockWidth * framesIterator;
-		if (currentXMax >= gridX.length - commentBlockWidth) {
-			break;
-		}
+		startX += commentBlockWidth;
 		do {			
-			currentX = b.round(b.random(commentBlockWidth * framesIterator, currentXMax));
 			frameHeight = b.round(b.random(2, 9));
 			currentY = b.round(b.random(0, 12 - frameHeight));
 			eolCounter++;
-		} while (checkPlacementColission(currentX, currentY, commentBlockWidth, frameHeight) && eolCounter < eolCounterMax);
+		} while (checkPlacementColission(startX, currentY, commentBlockWidth, frameHeight) && eolCounter < eolCounterMax);
 
 		if (eolCounter < eolCounterMax) {
 			frameHeight = frameHeight * gridHeight - gridGap;
-			frames[framesIterator] = b.text(totalComments, gridX[currentX] - b.width, gridY[currentY], currentCommentBlockWidth, gridY[currentY] + frameHeight > b.height ? b.height - gridY[currentY] : frameHeight);
+			frames[framesIterator] = b.text(totalComments, gridX[startX] - b.width, gridY[currentY], currentCommentBlockWidth, gridY[currentY] + frameHeight > b.height ? b.height - gridY[currentY] : frameHeight);
 			b.linkTextFrames(frames[framesIterator -1], frames[framesIterator]);
-			startX = currentX;
 			framesIterator++;
 			eolCounter = 0;
 		} else {
 			break;
 		}
-	} while (startX + commentBlockWidth < gridX.length);
+	} while (startX + commentBlockWidth * 2 < gridX.length);
 }
 
 function checkPlacementColission(pX, pY, pWidth, pHeight) {
+	pHeight += 1;
 	for (var yIterator = pY; yIterator < pY + pHeight; yIterator++) {
 		for (var xIterator = pX; xIterator < pX + pWidth; xIterator++) {
 			if (placement[yIterator][xIterator]) {
