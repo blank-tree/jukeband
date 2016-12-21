@@ -15,7 +15,6 @@ var coverSize = 2;
 
 // Grid placement settings
 var placement = [ [], [], [], [], [], [], [], [], [], [], [], [], [], [] ];
-var titleYPlacement = [];
 emptyPlacement();
 
 // Font Settings
@@ -60,13 +59,15 @@ function draw() {
 
 
   	if (entries[i].bandname.length < 12) {
-	  	placeTitle(entries[i].songtitle, 67, "Regular");
-	  	placeTitle(entries[i].bandname, 152,  "Bold");
+	  	// placeTitle(entries[i].songtitle, 67, "Regular");
+	  	// placeTitle(entries[i].bandname, 152,  "Bold");
+	  	placeTitle(entries[i].bandname, 152,  "Bold", entries[i].songtitle, 67, "Regular");
 	  	placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
   	} else {
   		placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
-  		placeTitle(entries[i].songtitle, 30, "Regular");
-	  	placeTitle(entries[i].bandname, 67,  "Bold");
+  		// placeTitle(entries[i].songtitle, 30, "Regular");
+	  	// placeTitle(entries[i].bandname, 67,  "Bold");
+	  	placeTitle(entries[i].bandname, 67,  "Bold", entries[i].songtitle, 30, "Regular");
   	}
 
   	emptyPlacement();
@@ -224,41 +225,73 @@ function placeComments(comments) {
 	} while (startX + commentBlockWidth * 2 < gridX.length);
 }
 
-function placeTitle(text, fontsize, fontstyle) {
+function placeTitle(text, fontsize, fontstyle, text2, fontsize2, fontstyle2) {
 
-	// Text Styling
+	var biggestSpot = findTitlePlacement();
+
+	for (var titelIteratorY = biggestSpot[1]; titelIteratorY < biggestSpot[3] + biggestSpot[1] + 1; titelIteratorY++) {
+		for (var titleIteratorX = biggestSpot[0]; titleIteratorX < biggestSpot[2] + biggestSpot[0]; titleIteratorX++) {
+			placement[titelIteratorY][titleIteratorX] = true;
+		}
+	}
+	var secondBiggestSpot = findTitlePlacement();
+
+	// Text 1
 	b.textFont(font, fontstyle);
 	b.textSize(fontsize);
 	b.textLeading(Leading.AUTO);
 	b.textTracking(0);
 	b.textAlign(Justification.LEFT_ALIGN);
+	var titleFrame = b.text(text.toUpperCase(), gridX[biggestSpot[0]] - b.width, gridY[biggestSpot[1]], biggestSpot[2] * gridWidth, biggestSpot[3] * gridHeight);
 
-	var randomX = 0;
-	var randomY = 0;
-	var randomWidth = 0;
-	var randomHeight = 0;
-	var imgMinimizer = 0;
-	var imgMinimizerIterator = 0;
+	// Text 2
+	b.textFont(font, fontstyle2);
+	b.textSize(fontsize2);
+	b.textLeading(Leading.AUTO);
+	b.textTracking(0);
+	b.textAlign(Justification.LEFT_ALIGN);
+	var titleFrame2 = b.text(text2.toUpperCase(), gridX[secondBiggestSpot[0]] - b.width, gridY[secondBiggestSpot[1]], secondBiggestSpot[2] * gridWidth, secondBiggestSpot[3] * gridHeight);
 
-	do {
-		randomX = b.round(b.random(0, 13));
-		do {
-			randomY = b.round(b.random(0, 8));
-		} while(checkTitlePlacementColission(randomY));
-		randomWidth = gridX.length - randomX - imgMinimizer > 0 ? gridX.length - randomX - imgMinimizer : 0;
-		randomHeight = gridY.length - randomY - imgMinimizer > 0 ? gridY.length - randomY - imgMinimizer : 0;
+}
 
-		imgMinimizerIterator++;
-		if (imgMinimizerIterator == 10) {
-			imgMinimizer++;
-			imgMinimizerIterator = 0;
+function findTitlePlacement() {
+	var biggestSpot = [0,0,0,0];
+	for (var yIterator = 0; yIterator < gridY.length - 1; yIterator++) {
+		for (var xIterator = 0; xIterator < gridX.length - 1; xIterator++) {
+			var currentMeasurement = measureBigestSpot(xIterator, yIterator);
+			if (currentMeasurement[2] * currentMeasurement[3] > biggestSpot[2] * biggestSpot[3]) {
+				biggestSpot = currentMeasurement;
+			}
 		}
-	} while (checkPlacementColission(randomX, randomY, randomWidth, randomHeight));
+	}
+	return biggestSpot;
+}
 
-	titleYPlacement.push(randomY);
+function measureBigestSpot(pX, pY) {
+	var pWidth = 0;
+	var pHeight = 0;
 
-	var titleFrame = b.text(text.toUpperCase(), gridX[randomX] - b.width, gridY[randomY], randomWidth * gridWidth, randomHeight * gridHeight);
+	while(pY+pHeight < gridY.length - 1 && !placement[pY+pHeight][pX]) {
+		var currentMeasurementWidth = scanLongestLine(pX, pY+pHeight);
+		if (pWidth == 0 && currentMeasurementWidth > pWidth) {
+			pWidth = currentMeasurementWidth;
+			pHeight++;
+		} else if (currentMeasurementWidth >= pWidth) {
+			pHeight++;
+		} else {
+			pHeight--;
+			break;
+		}
+	}
+	return [pX, pY, pWidth, pHeight];
+}
 
+function scanLongestLine(pX, pY) {
+	var currentWidth = 0;
+	while (pX+currentWidth < gridX.length - 1 && !placement[pY][pX+currentWidth]) {
+		currentWidth++;
+	}
+	return currentWidth;
 }
 
 function checkPlacementColission(pX, pY, pWidth, pHeight) {
@@ -273,22 +306,12 @@ function checkPlacementColission(pX, pY, pWidth, pHeight) {
 	return false;
 }
 
-function checkTitlePlacementColission(pY) {
-	for (var titlePlaceIterator = 0; titlePlaceIterator < titleYPlacement.length; titlePlaceIterator++) {
-		if (pY == titleYPlacement[titlePlaceIterator]) {
-			return true;
-		}
-	}
-	return false;
-}
-
 function emptyPlacement() {
 	for (var yIterator = 0; yIterator < gridY.length; yIterator++) {
 		for (var xIterator = 0; xIterator < gridX.length; xIterator++) {
 			placement[yIterator][xIterator] = false;
 		}
 	}
-	titleYPlacement = [];
 	// b.rotate(b.PI);
 }
 
