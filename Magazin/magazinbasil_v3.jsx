@@ -22,10 +22,8 @@ var font = "Oswald";
 
 // Engine Settings
 var eolCounterMax = 50;
-var weeklyFiles = [];
-var magazinJson = [];
 
-// "fake it 'til you make it"-settings
+// fake it til you make it-settings
 var dayIterator = 0;
 var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var dateDay = 1;
@@ -38,60 +36,62 @@ function draw() {
   b.noStroke();
 
   // Load external data file in JSON-Format
-  magazinJson[0] = b.loadString('magazin-MF-4.json');
-  weeklyFiles[0] = b.JSON.decode(magazinJson[0])[0];
-  magazinJson[1] = b.loadString('magazin-MF-4.json');
-  weeklyFiles[1] = b.JSON.decode(magazinJson[1])[0];
-  // magazinJson[2] = b.loadString('magazin-MF-5.json');
-  // weeklyFiles[2] = b.JSON.decode(magazinJson[2])[0];
-  // magazinJson[3] = b.loadString('magazin-FF2.json');
-  // weeklyFiles[3] = b.JSON.decode(magazinJson[3])[0];
+  var jsonFile0 = b.loadString('magazin-MF-4.json');
+  var weeklyContent0 = b.JSON.decode(jsonFile0)[0];
+  var jsonFile1 = b.loadString('magazin-FF.json');
+  var weeklyContent1 = b.JSON.decode(jsonFile1)[0];
+  var jsonFile2 = b.loadString('magazin-MF-5.json');
+  var weeklyContent2 = b.JSON.decode(jsonFile2)[0];
+  var jsonFile3 = b.loadString('magazin-FF2.json');
+  var weeklyContent3 = b.JSON.decode(jsonFile3)[0];
+
 
   // Titelseite
 
-  // TODO: Titelpage here!
-
-  b.addPage();
-
-  b.forEach(weeklyFiles, function(item, i) {
-
-  		// Kurator
-
-		// TODO: Kurator here!
-
-		// Music
-		var entries = item.entries;
-
-		for (var i = 0; i < entries.length; i++) {
-		  	b.addPage();
-
-
-		  	placeImage(entries[i].imgUrl, i, 'cover');
-		  	placeImage(entries[i].imgUrl, i, 'artwork');
-		  	placeComments(entries[i].comments);
-
-
-		  	if (entries[i].bandname.length < 12) {
-		  		randomTitlePlacement(entries[i], 67, 74, 152, 144);
-			  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
-		  	} else {
-		  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
-			  	randomTitlePlacement(entries[i], 30, 32, 67, 74);
-		  	}
-		  	dayIterator = dayIterator++ < 7 ? dayIterator++ : 0;
-		  	dateDay++;
-
-		  	emptyPlacement();
-
-
-		  	b.addPage();
-		}
-	});
-
+  // Content
+  placeContent(weeklyContent0);
+  // placeContent(weeklyContent1);
+  // placeContent(weeklyContent2);
+  // placeContent(weeklyContent3);
 
 
   // Rückseite
 
+}
+
+function placeContent(weekContent) {
+
+	// Kurator
+
+	// TODO: Kurator here!
+
+	// Music
+	var entries = weekContent.entries;
+
+	for (var i = 0; i < 7; i++) {
+	  	b.addPage();
+
+
+	  	placeImage(entries[i].imgUrl, i, 'cover');
+	  	placeImage(entries[i].imgUrl, i, 'artwork');
+	  	placeComments(entries[i].comments);
+
+
+	  	if (entries[i].bandname.length < 12) {
+	  		randomTitlePlacement(entries[i], 67, 74, 152, 144);
+		  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
+	  	} else {
+	  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
+		  	randomTitlePlacement(entries[i], 30, 32, 67, 74);
+	  	}
+	  	dayIterator = dayIterator++ < 7 ? dayIterator++ : 0;
+	  	dateDay++;
+
+	  	emptyPlacement();
+
+
+	  	b.addPage();
+	}
 }
 
 function randomTitlePlacement(entry, small, smallLeading, big, bigLeading) {
