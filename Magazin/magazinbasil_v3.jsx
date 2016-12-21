@@ -237,16 +237,22 @@ function placeTitle(text, fontsize, fontstyle) {
 	var randomY = 0;
 	var randomWidth = 0;
 	var randomHeight = 0;
+	var imgMinimizer = 0;
+	var imgMinimizerIterator = 0;
 
 	do {
-		randomWidth = b.round(b.random(5, 8));
-		randomHeight = b.round(b.random(2, 3));
-		randomX = b.round(b.random(0, gridX.length - randomWidth - 1));
+		randomX = b.round(b.random(0, 13));
 		do {
-			randomY = b.round(b.random(0, gridY.length - randomHeight - 1));
+			randomY = b.round(b.random(0, 8));
 		} while(checkTitlePlacementColission(randomY));
+		randomWidth = gridX.length - randomX - imgMinimizer > 0 ? gridX.length - randomX - imgMinimizer : 0;
+		randomHeight = gridY.length - randomY - imgMinimizer > 0 ? gridY.length - randomY - imgMinimizer : 0;
 
-		
+		imgMinimizerIterator++;
+		if (imgMinimizerIterator == 10) {
+			imgMinimizer++;
+			imgMinimizerIterator = 0;
+		}
 	} while (checkPlacementColission(randomX, randomY, randomWidth, randomHeight));
 
 	titleYPlacement.push(randomY);
