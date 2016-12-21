@@ -22,6 +22,13 @@ var font = "Oswald";
 
 // Engine Settings
 var eolCounterMax = 50;
+var weeklyFiles = [];
+var magazinJson = [];
+
+// "fake it 'til you make it"-settings
+var dayIterator = 0;
+var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var dateDay = 1;
 
 // Main function
 function draw() {
@@ -31,52 +38,70 @@ function draw() {
   b.noStroke();
 
   // Load external data file in JSON-Format
-  var magazinJson = b.loadString('magazinMF.json');
-  magazinJson = b.JSON.decode(magazinJson)[0];
-
+  magazinJson[0] = b.loadString('magazin-MF-4.json');
+  weeklyFiles[0] = b.JSON.decode(magazinJson[0])[0];
+  magazinJson[1] = b.loadString('magazin-MF-4.json');
+  weeklyFiles[1] = b.JSON.decode(magazinJson[1])[0];
+  // magazinJson[2] = b.loadString('magazin-MF-5.json');
+  // weeklyFiles[2] = b.JSON.decode(magazinJson[2])[0];
+  // magazinJson[3] = b.loadString('magazin-FF2.json');
+  // weeklyFiles[3] = b.JSON.decode(magazinJson[3])[0];
 
   // Titelseite
 
   // TODO: Titelpage here!
 
   b.addPage();
-  
-  // Kurator
 
-  // TODO: Kurator here!
+  b.forEach(weeklyFiles, function(item, i) {
 
-  // Music
+  		// Kurator
 
-  var entries = magazinJson.entries;
+		// TODO: Kurator here!
 
-  for (var i = 0; i < entries.length; i++) {
-  	b.addPage();
+		// Music
+		var entries = item.entries;
 
-
-  	placeImage(entries[i].coverUrl, i, 'cover');
-  	placeImage(entries[i].artworkUrl, i, 'artwork');
-  	placeComments(entries[i].comments);
+		for (var i = 0; i < entries.length; i++) {
+		  	b.addPage();
 
 
-  	if (entries[i].bandname.length < 12) {
-	  	// placeTitle(entries[i].songtitle, 67, "Regular");
-	  	// placeTitle(entries[i].bandname, 152,  "Bold");
-	  	placeTitle(entries[i].bandname, 152,  "Bold", entries[i].songtitle, 67, "Regular");
-	  	placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
-  	} else {
-  		placeDate(i, "Monday", "21.12.2016", "USA", "03:47");
-  		// placeTitle(entries[i].songtitle, 30, "Regular");
-	  	// placeTitle(entries[i].bandname, 67,  "Bold");
-	  	placeTitle(entries[i].bandname, 67,  "Bold", entries[i].songtitle, 30, "Regular");
-  	}
-
-  	emptyPlacement();
+		  	placeImage(entries[i].imgUrl, i, 'cover');
+		  	placeImage(entries[i].imgUrl, i, 'artwork');
+		  	placeComments(entries[i].comments);
 
 
-  	b.addPage();
-  }
+		  	if (entries[i].bandname.length < 12) {
+		  		randomTitlePlacement(entries[i], 67, 74, 152, 144);
+			  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
+		  	} else {
+		  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].length);
+			  	randomTitlePlacement(entries[i], 30, 32, 67, 74);
+		  	}
+		  	dayIterator = dayIterator++ < 7 ? dayIterator++ : 0;
+		  	dateDay++;
+
+		  	emptyPlacement();
+
+
+		  	b.addPage();
+		}
+	});
+
+
 
   // Rückseite
+
+}
+
+function randomTitlePlacement(entry, small, smallLeading, big, bigLeading) {
+	var chooseRandomly = b.round(b.random(0,1));
+
+	if (chooseRandomly == 0) {
+		placeTitle(entry.bandname, big, bigLeading, "Bold", entry.songtitle, small, smallLeading, "Light");
+	} else {
+		placeTitle(entry.songtitle, big, bigLeading, "Light", entry.bandname, small, smallLeading, "Bold");
+	}
 
 }
 
@@ -115,8 +140,8 @@ function placeImage(imageUrl, id, type) {
 	} while (checkPlacementColission(imgPos[0], imgPos[1], imgGridWidth, imgGridHeight));
 
 	// Build image path
-	// var imgPath = type + "/" + imageUrl + ".jpg";
-	var imgPath = "cover/cover_" + id + ".jpg";
+	var imgPath = type + "/" + imageUrl + ".jpg";
+	// var imgPath = "cover/cover_" + id + ".jpg";
 
 	// Place Image
 	var imgPosXPt = imgPos[0] != imgGridXMax ? gridX[imgPos[0]] - b.width : gridX[imgPos[0]] - b.width + imgGridXMaxCorrection;
@@ -225,7 +250,7 @@ function placeComments(comments) {
 	} while (startX + commentBlockWidth * 2 < gridX.length);
 }
 
-function placeTitle(text, fontsize, fontstyle, text2, fontsize2, fontstyle2) {
+function placeTitle(text, fontsize, fontLeading, fontstyle, text2, fontsize2, fontLeading2, fontstyle2) {
 
 	var biggestSpot = findTitlePlacement();
 
@@ -239,7 +264,7 @@ function placeTitle(text, fontsize, fontstyle, text2, fontsize2, fontstyle2) {
 	// Text 1
 	b.textFont(font, fontstyle);
 	b.textSize(fontsize);
-	b.textLeading(Leading.AUTO);
+	b.textLeading(fontLeading);
 	b.textTracking(0);
 	b.textAlign(Justification.LEFT_ALIGN);
 	var titleFrame = b.text(text.toUpperCase(), gridX[biggestSpot[0]] - b.width, gridY[biggestSpot[1]], biggestSpot[2] * gridWidth, biggestSpot[3] * gridHeight);
@@ -247,7 +272,7 @@ function placeTitle(text, fontsize, fontstyle, text2, fontsize2, fontstyle2) {
 	// Text 2
 	b.textFont(font, fontstyle2);
 	b.textSize(fontsize2);
-	b.textLeading(Leading.AUTO);
+	b.textLeading(fontLeading2);
 	b.textTracking(0);
 	b.textAlign(Justification.LEFT_ALIGN);
 	var titleFrame2 = b.text(text2.toUpperCase(), gridX[secondBiggestSpot[0]] - b.width, gridY[secondBiggestSpot[1]], secondBiggestSpot[2] * gridWidth, secondBiggestSpot[3] * gridHeight);
@@ -343,10 +368,12 @@ function placeDate(dayInt, dayString, dateString, countryString, durationString)
 	dateFrames[2] = b.text(countryString, gridX[12] - b.width - gridGap, gridY[9] - gridGap, gridHeight, gridGap);
 	dateFrames[3] = b.text(durationString, gridX[12] - b.width - gridGap, gridY[8] - gridGap, gridHeight, gridGap);
 
+	/*
 	for (var rotationIterator = 0; rotationIterator < dateFrames.length; rotationIterator++) {
 		
 		//  dateFrames[rotationIterator]
 	}
+	*/
 
 	b.popMatrix();
 
