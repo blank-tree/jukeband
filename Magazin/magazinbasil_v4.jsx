@@ -11,6 +11,7 @@ var gridGap = 14.173; // pt
 
 // Image Sizes
 var artworkSize = 7;
+var artworkSizeFour = 8;
 var coverSize = 2;
 
 // Grid placement settings
@@ -23,7 +24,7 @@ var font = "Oswald";
 // Engine Settings
 var eolCounterMax = 50;
 
-// fake it til you make it-settings
+// fake it til you make it settings
 var dayIterator = 0;
 var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var dateDay = 1;
@@ -104,42 +105,73 @@ function placeContent(weekContent) {
 	for (var i = 0; i < 7; i++) {
 	  	b.addPage();
 
+	  	var choosePage = b.round(b.random(0, 1));
 
-	  	placeImage(entries[i].imgUrl, i, 'cover');
-	  	placeImage(entries[i].imgUrl, i, 'artwork');
-	  	placeComments(entries[i].comments);
-
-
-	  	if (entries[i].bandname.length < 12) {
-	  		randomTitlePlacement(entries[i], 67, 74, 152, 144);
-		  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+	  	if (choosePage == 0) {
+	  		placeIndividualContentOnTwo(entries, i);
 	  	} else {
-	  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
-		  	randomTitlePlacement(entries[i], 30, 32, 67, 74);
+	  		placeIndividualContentOnFour(entries, i);
 	  	}
+
 	  	dayIterator = dayIterator + 1 < 7 ? dayIterator + 1 : 0;
 	  	dateDay++;
-
-	  	emptyPlacement();
-
 
 	  	b.addPage();
 	}
 }
 
+function placeIndividualContentOnTwo(entries, i) {
+	placeImage(entries[i].imgUrl, i, 'cover', false);
+  	placeImage(entries[i].imgUrl, i, 'artwork', false);
+  	placeComments(entries[i].comments);
 
-function randomTitlePlacement(entry, small, smallLeading, big, bigLeading) {
+  	if (entries[i].bandname.length < 12) {
+  		randomTitlePlacement(entries[i], 67, 74, 152, 144, false);
+	  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+  	} else {
+  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+	  	randomTitlePlacement(entries[i], 30, 32, 67, 74, false);
+  	}
+
+  	emptyPlacement();
+}
+
+function placeIndividualContentOnFour(entries, i) {
+	placeImage(entries[i].imgUrl, i, 'cover', true);
+  	placeImage(entries[i].imgUrl, i, 'artwork', true);
+  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+
+  	emptyPlacement();
+  	b.addPage();
+  	b.addPage();
+
+  	placeComments(entries[i].comments);
+
+  	if (entries[i].bandname.length < 12) {
+  		randomTitlePlacement(entries[i], 152, 144, 233, 220, true);
+	  	placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+  	} else {
+  		placeDate(i, dayNames[dayIterator], dateDay + ".01.2017", entries[i].country, entries[i].duration);
+	  	randomTitlePlacement(entries[i], 67, 74, 152, 144, true);
+  	}
+
+  	emptyPlacement();
+
+}
+
+
+function randomTitlePlacement(entry, small, smallLeading, big, bigLeading, randomPlacement) {
 	var chooseRandomly = b.round(b.random(0,1));
 
 	if (chooseRandomly == 0) {
-		placeTitle(entry.bandname, big, bigLeading, "Bold", entry.songtitle, small, smallLeading, "Light");
+		placeTitle(entry.bandname, big, bigLeading, "Bold", entry.songtitle, small, smallLeading, "Light", randomPlacement);
 	} else {
-		placeTitle(entry.songtitle, big, bigLeading, "Light", entry.bandname, small, smallLeading, "Bold");
+		placeTitle(entry.songtitle, big, bigLeading, "Light", entry.bandname, small, smallLeading, "Bold", randomPlacement);
 	}
 
 }
 
-function placeImage(imageUrl, id, type) {
+function placeImage(imageUrl, id, type, largeArtwork) {
 	
 	// define imgGridHeight of the image
 	var imgGridHeight = 0;
@@ -154,10 +186,10 @@ function placeImage(imageUrl, id, type) {
 			imgGridXMaxCorrection = 2.361;
 			break;
 		case "artwork":
-			imgGridHeight = artworkSize; // Grid No
-			imgGridXMax = 12;
-			imgGridYMax = 5;
-			imgGridXMaxCorrection = 33.623;
+			imgGridHeight = largeArtwork ? artworkSizeFour : artworkSize; // Grid No
+			imgGridXMax = largeArtwork ? 11 : 12;
+			imgGridYMax = largeArtwork ? 4 : 5;
+			imgGridXMaxCorrection = largeArtwork ? 44.876 : 33.623; // largeArtwork ? -113.377 : 33.623;
 			break;
 		default:
 			b.println("Invalid type passed to placeImage function");
@@ -279,23 +311,35 @@ function placeComments(comments) {
 			framesIterator++;
 			eolCounter = 0;
 		} else {
-			eolCounterMax = 0;
+			eolCounter = 0;
 			break;
 		}
 	} while (startX + commentBlockWidth * 2 < gridX.length);
 }
 
-function placeTitle(text, fontsize, fontLeading, fontstyle, text2, fontsize2, fontLeading2, fontstyle2) {
+function placeTitle(text, fontsize, fontLeading, fontstyle, text2, fontsize2, fontLeading2, fontstyle2, randomPlacement) {
 
-	var biggestSpot = findTitlePlacement();
+	var biggestSpot = [0,0,0,0];
+	var secondBiggestSpot = [0,0,0,0];
 
-	for (var titelIteratorY = biggestSpot[1]; titelIteratorY < biggestSpot[3] + biggestSpot[1] + 1; titelIteratorY++) {
-		for (var titleIteratorX = biggestSpot[0]; titleIteratorX < biggestSpot[2] + biggestSpot[0]; titleIteratorX++) {
-			placement[titelIteratorY][titleIteratorX] = true;
+	if (!randomPlacement) {
+		biggestSpot = findTitlePlacement();
+		for (var titelIteratorY = biggestSpot[1]; titelIteratorY < biggestSpot[3] + biggestSpot[1] + 1; titelIteratorY++) {
+			for (var titleIteratorX = biggestSpot[0]; titleIteratorX < biggestSpot[2] + biggestSpot[0]; titleIteratorX++) {
+				placement[titelIteratorY][titleIteratorX] = true;
+			};
 		};
-	};
-	var secondBiggestSpot = findTitlePlacement();
-
+		secondBiggestSpot = findTitlePlacement();
+	} else {
+		biggestSpot = findRandomTitlePlacement();
+		for (var titelIteratorY = biggestSpot[1]; titelIteratorY < biggestSpot[3] + biggestSpot[1] + 1; titelIteratorY++) {
+			for (var titleIteratorX = biggestSpot[0]; titleIteratorX < biggestSpot[2] + biggestSpot[0]; titleIteratorX++) {
+				placement[titelIteratorY][titleIteratorX] = true;
+			};
+		};
+		secondBiggestSpot = findTitlePlacement();
+	}
+	
 	// Text 1
 	b.textFont(font, fontstyle);
 	b.textSize(fontsize);
@@ -312,6 +356,22 @@ function placeTitle(text, fontsize, fontLeading, fontstyle, text2, fontsize2, fo
 	b.textAlign(Justification.LEFT_ALIGN);
 	var titleFrame2 = b.text(text2.toUpperCase(), gridX[secondBiggestSpot[0]] - b.width, gridY[secondBiggestSpot[1]], secondBiggestSpot[2] * gridWidth, secondBiggestSpot[3] * gridHeight);
 
+}
+
+function findRandomTitlePlacement() {
+	var rtpX = 0;
+	var rtpY = 0;
+	var rtpWidth = 0;
+	var rtpHeight = 0;
+
+	do {
+		rtpX = b.round(b.random(3, 11));
+		rtpY = b.round(b.random(3,7));
+		rtpWidth = gridX.length - rtpX - 1;
+		rtpHeight = gridY.length - rtpY - 1;
+	} while (rtpWidth * rtpHeight < 20);
+
+	return [rtpX, rtpY, rtpWidth, rtpHeight];
 }
 
 function findTitlePlacement() {
