@@ -1,13 +1,41 @@
 #date-display {
   position: fixed;
-  right: 0;
-  top: rem-calc(25);
-  padding: 0 rem-calc(35) 0 rem-calc(10);
-  background-color: $black;
+  left: rem-calc(0);
+  bottom: 12.75rem;
+  padding: rem-calc(3) rem-calc(35) rem-calc(2) rem-calc(10);
+  background-color: $white;
+  color: $black;
+  transform: rotate(-90deg);
+  font-size: rem-calc(16);
+  span {
+    margin-right: rem-calc(45);
+  }
+  span.stwice {
+    margin-right: rem-calc(90);
+  }
 }
 
 #cover {
   width: 100%;
+}
+
+#titleScreen {
+  width: 100%;
+  h2#ts-bandname, h2#ts-songtitle {
+    //text-align: center;
+    margin: auto;
+    position: absolute;
+  }
+
+  h2#ts-bandname {
+    font-weight: bold;
+    font-size: 15rem;
+  }
+
+  h2#ts-songtitle {
+    font-weight: 300;
+    font-size: 7.5rem;
+  }
 }
 
 #description {
@@ -18,13 +46,34 @@
 
     margin-top: rem-calc(50);
 
-    .button.expanded {
-      display: block;
-    }
+
   }
+}
+
+.button.expanded {
+  display: block;
+  border: none;
+  font-weight: bold;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 20;
+  color: $black;
+  padding-right: 0;
+}
+.button.expanded.order {
+  text-align: center;
 }
 
 #comments {
   margin-top: 3rem;
   margin-bottom: 5rem;
+}
+
+
+div.spoiler-content {
+  display: none;
+}
+
+blockquote {
+  border-left: none;
 }

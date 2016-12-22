@@ -61,8 +61,8 @@ function placeIndex(completeContent) {
 	var totalSongtitles = "";
 	for (var contentIterator = 0; contentIterator < 4; contentIterator++) {
   		for (var weekIterator = 0; weekIterator < 7; weekIterator++) {
-  			totalBandnames = totalBandnames + completeContent[contentIterator].entries[weekIterator].bandname + "\n";
-  			totalSongtitles = totalSongtitles + completeContent[contentIterator].entries[weekIterator].songtitle + "\n";
+  			totalBandnames = totalBandnames + completeContent[contentIterator].entries[weekIterator].bandname.toUpperCase() + "\n";
+  			totalSongtitles = totalSongtitles + completeContent[contentIterator].entries[weekIterator].songtitle.toUpperCase() + "\n";
   		}
   	}
 
