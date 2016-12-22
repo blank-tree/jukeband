@@ -1,9 +1,9 @@
-# suggestie
+# juke.band
 ## Fernando Obieta - [blanktree.ch](https://blanktree.ch), Meret Fischli and Fiona Federspiel
 
 Music suggestion for the module "VVK - Graphic Design" at the [Zurich University of the Arts](https://www.zhdk.ch/)
 
-###### Version: 0.01 - 161207
+###### Version: 0.38 - 161222
 
 ## Installation
 
