@@ -42,6 +42,7 @@ function draw() {
 
   // Index
   placeIndex(completeContent);
+  placeImageIndex(completeContent);
 
   // Content
   for (var contentIterator = 0; contentIterator < 4; contentIterator++) {
@@ -89,6 +90,30 @@ function placeIndex(completeContent) {
 
 
 	b.addPage();
+}
+
+function placeImageIndex(completeContent) {
+
+	b.addPage();
+
+	for (var imgIteratorY = 0; imgIteratorY < 4; imgIteratorY++) {
+		for (var imgIteratorX = 0; imgIteratorX < 7; imgIteratorX++) {
+
+			var imgPath = "cover/" + completeContent[imgIteratorY].entries[imgIteratorX].imgUrl + ".jpg";
+			var imgSize = coverSize * gridHeight - gridGap;
+
+			var xJump = imgIteratorX > 3 ? 2 : 0;
+			var xJumpGap = imgIteratorX > 3 ? 2.36 : 0;
+			var yJumpFix = imgIteratorY == 3 ? 1 : 0
+			
+			var currentImg = b.image(imgPath, gridX[imgIteratorX * 3 + xJump] - b.width + xJumpGap, gridY[imgIteratorY * 2 + 1 + yJumpFix], imgSize, imgSize);
+
+		}
+	}
+
+	b.addPage();
+
+
 }
 
 function placeContent(weekContent) {
