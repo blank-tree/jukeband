@@ -211,7 +211,7 @@ define( 'WORKING_PATH', getcwd() );
 			</div>
 			<div class="row">
 				<div class="small-11 small-centered columns">
-					<input type="text" placeholder="recipient name">
+					<input type="text" placeholder="name">
 				</div>
 			</div>
 			<div class="row">
